@@ -54,4 +54,6 @@ public class MainActivity extends AppCompatActivity {
     public native int division(int a, int b);
 
     public native String getAvcodecInfo();
+
+    public native void play(String path);
 }
