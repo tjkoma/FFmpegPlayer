@@ -61,4 +61,5 @@ JNIEXPORT jstring JNICALL Java_com_example_administrator_ffmpegplayer_MainActivi
         av_register_all();
         //初始化AVFormatContext的上下文
         AVFormatContext *format_context = avformat_alloc_context();
+
 }
