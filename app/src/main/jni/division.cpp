@@ -1,5 +1,6 @@
 #include <jni.h>
 #include <string>
+#include <unistd.h>
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -8,6 +9,8 @@ extern "C" {
 #include <android/log.h>
 #include <android/native_window.h>
 #include <android/native_window_jni.h>
+#include <libavutil/imgutils.h>
+#include <libyuv.h>
 #define LOGE(FORMAT, ...) __android_log_print(ANDROID_LOG_ERROR,"ffmpeg",FORMAT,##__VA_ARGS__);
 }
 
@@ -73,7 +76,7 @@ JNIEXPORT void JNICALL Java_com_example_administrator_ffmpegplayer_MainActivity_
     };
     //获取视频信息
     if (avformat_find_stream_info(format_context, NULL) < 0) {
-        LOGE("%S", "获取视频信息失败");
+        LOGE("%s", "获取视频信息失败");
         return;
     }
     //视频解码，需要找到视频对应的AVStream所在pFormatCtx->streams的索引位置
@@ -135,19 +138,32 @@ JNIEXPORT void JNICALL Java_com_example_administrator_ffmpegplayer_MainActivity_
                     // fix buffer
                     // 初始化缓冲区
                     // 设置属性，像素格式、宽高
-                    avpicture_fill(reinterpret_cast<AVPicture *>(rgbAVFrame),
-                                   static_cast<const uint8_t *>(aNativeWindow_buffer->bits),
-                                   AV_PIX_FMT_RGBA, width, height);
+                    av_image_fill_arrays(rgbAVFrame->data, rgbAVFrame->linesize,
+                                         static_cast<const uint8_t *>(aNativeWindow_buffer->bits),
+                                         AV_PIX_FMT_RGBA,
+                                         width, height, 1);
                     // YUV格式的数据转换成RGBA 8888格式的数据
-//                    I420ToARGB(yuvAVFrame->data[0], yuvAVFrame->linesize[0],
-//                               yuvAVFrame->data[2], yuvAVFrame->linesize[2],
-//                               yuvAVFrame->data[1], yuvAVFrame->linesize[1],
-//                               yuvAVFrame->data[0], yuvAVFrame->linesize[0],
-//                               width, height);
+                    libyuv::I420ToARGB(yuvAVFrame->data[0], yuvAVFrame->linesize[0],
+                                       yuvAVFrame->data[2], yuvAVFrame->linesize[2],
+                                       yuvAVFrame->data[1], yuvAVFrame->linesize[1],
+                                       yuvAVFrame->data[0], yuvAVFrame->linesize[0],
+                                       width, height);
+                    // unlock window
+                    ANativeWindow_unlockAndPost(aNativeWindow);
+                    frame_count++;
+                    LOGE("解码绘制第%d帧", frame_count);
+                    // 每绘制一帧便休眠16毫秒，避免绘制过快导致播放的视频速度加快
+                    usleep(1000 * 16);
                 }
             }
         }
         av_packet_unref(avPacket);
     }
-
+    //释放资源
+    av_frame_free(&yuvAVFrame);
+    av_frame_free(&rgbAVFrame);
+    avcodec_close(avCodecContext);
+    avformat_free_context(format_context);
+    ANativeWindow_release(aNativeWindow);
+    env->GetStringUTFChars(path, JNI_FALSE);
 }
