@@ -30,7 +30,7 @@ add_library( # Sets the name of the library.
 
 add_library(division
             SHARED
-            src/main/jni/division.cpp)
+        src/main/jni/division.cpp)
 
 #导入头文件
 include_directories(src/main/jniLibs/include)
