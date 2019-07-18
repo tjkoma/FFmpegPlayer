@@ -37,6 +37,16 @@ include_directories(src/main/jniLibs/include)
 
 set(distribution_DIR ${CMAKE_SOURCE_DIR}/src/main/jniLibs/armeabi-v7a)
 
+add_library(libandroid
+        SHARED
+        IMPORTED)
+
+set_target_properties(
+        libandroid
+        PROPERTIES IMPORTED_LOCATION
+        ${distribution_DIR}/libandroid.so
+)
+
 add_library(avcodec57
             SHARED
             IMPORTED)
@@ -139,6 +149,7 @@ target_link_libraries( # Specifies the target library.
                        # included in the NDK.
                        ${log-lib} )
 target_link_libraries( division
+                       libandroid
                        avcodec57
                        avdevice57
                        avfilter6

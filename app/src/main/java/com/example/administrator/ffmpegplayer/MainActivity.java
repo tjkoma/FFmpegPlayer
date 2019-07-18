@@ -6,6 +6,7 @@ import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.widget.EditText;
@@ -56,6 +57,10 @@ public class MainActivity extends AppCompatActivity {
                     String outputurl = folderurl + "/" + urltext_output;
                     Log.e("inputurl", inputurl);
                     Log.e("outputurl", outputurl);
+                    String path = Environment.getExternalStorageDirectory().getPath() + "/" + "1234.mp4";
+                    if (!TextUtils.isEmpty(path)) {
+                        playVideo(path, surface_view.getHolder().getSurface());
+                    }
 //                    tv.setText(decode(inputurl, outputurl) + "");
                 }
         );
@@ -102,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
 
     public native void play(String path, Object object);
 
-    public native int decode(String inputurl, String outputurl);
+//    public native int decode(String inputurl, String outputurl);
 
     public native int playVideo(String path, Object obj);
 }
