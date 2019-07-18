@@ -205,8 +205,8 @@ Java_com_example_administrator_ffmpegplayer_MainActivity_decode(
     char input_str[500] = {0};
     char output_str[500] = {0};
     char info[1000] = {0};
-//    sprintf(input_str, "%s", (*env)->GetStringUTFChars(env, input_jstr, NULL));
-//    sprintf(output_str, "%s", (*env)->GetStringUTFChars(env, output_jstr, NULL));
+    sprintf(input_str, "%s", env->GetStringUTFChars(input_jstr, NULL));
+    sprintf(output_str, "%s", env->GetStringUTFChars(output_jstr, NULL));
 
 //FFmpeg av_log() callback
     av_log_set_callback(custom_log);

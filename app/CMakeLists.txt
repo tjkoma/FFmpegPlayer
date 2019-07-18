@@ -35,7 +35,7 @@ add_library(division
 #导入头文件
 include_directories(src/main/jniLibs/include)
 
-set(distribution_DIR ${CMAKE_SOURCE_DIR}/src/main/jniLibs/armeabi)
+set(distribution_DIR ${CMAKE_SOURCE_DIR}/src/main/jniLibs/armeabi-v7a)
 
 add_library(avcodec57
             SHARED
