@@ -7,6 +7,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.SurfaceView;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText edittext1, edittext2;
     private TextView confirm_tv;
-    private JzvdStd player;
+    private SurfaceView surface_view;
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         edittext1 = findViewById(R.id.edittext1);
         edittext2 = findViewById(R.id.edittext2);
         confirm_tv = findViewById(R.id.confirm_tv);
-        player = findViewById(R.id.player);
+        surface_view = findViewById(R.id.surface_view);
         tv.setText(getAvcodecInfo());
         confirm_tv.setOnClickListener(v ->
 //                tv.setText(division(Integer.parseInt(edittext1.getText().toString()), Integer.parseInt(edittext2.getText().toString())) + "")
@@ -55,8 +56,7 @@ public class MainActivity extends AppCompatActivity {
                     String outputurl = folderurl + "/" + urltext_output;
                     Log.e("inputurl", inputurl);
                     Log.e("outputurl", outputurl);
-                    tv.setText(decode(inputurl, outputurl) + "");
-                    player.setUp(inputurl,"视频");
+//                    tv.setText(decode(inputurl, outputurl) + "");
                 }
         );
 
@@ -103,4 +103,6 @@ public class MainActivity extends AppCompatActivity {
     public native void play(String path, Object object);
 
     public native int decode(String inputurl, String outputurl);
+
+    public native int playVideo(String path, Object obj);
 }
